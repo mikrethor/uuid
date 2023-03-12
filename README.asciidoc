@@ -1,0 +1,123 @@
+= uuid
+
+This project is linked to a blog post I wrote in order to compare Java and Rust.
+It's a small use case as I was looking for the best tool for me to write a CLI.
+
+Link to the blog https://www.xavierbouclet.com/2023/03/12/Tryout-Rust-Java-CLI.html[post].
+
+[WARNING]
+It doesn't prove anything on which language is better.
+
+I wanted to get some UUID from a website in order to avoid doing it manually through a web browser.
+The url https://www.uuidtools.com/api/generate/vUUIDVERSION/count/COUNT generates a number of UUID with a specific version.
+The parameters of the executable are :
+
+- VERSION : version of the UUID (1,2, 4)
+- COUNT : number of uuid to request
+
+== uuid-java
+
+This project leverages the power [https://www.graalvm.org/java/]GRAALVM in order to improve the usual performance of a JVM executable on such use case.
+
+First install to install GRAALVM, I use [https://sdkman.io/usage]sdkman :
+
+[source, sh]
+----
+sdk install java 22.3.r17-grl
+----
+
+We can use it in our current console :
+
+[source, sh]
+----
+sdk use java 22.3.r17-grl
+----
+
+We need to specify the GRAALVM_HOME ti be able to compile natively :
+
+[source, sh]
+----
+export GRAALVM_HOME=~/.sdkman/candidates/java/22.3.r17-grl/
+----
+
+GraalVM is a JVM and we need to add the native-image executable to compile Java code natively. It's done with the following command :
+
+[source, sh]
+----
+~/.sdkman/candidates/java/22.0.0.2.r17-grl/bin/gu install native-image
+----
+
+To compile the Java code to a native executable :
+
+[source, sh]
+----
+cd uuid-java
+./mvnw package -Pnative -DskipTests
+----
+
+We can execute the program to request 5 version 4 uuids, with the following command :
+
+[source, sh]
+----
+./target/uuid-java 4 5
+----
+
+You should see a result similar to this one :
+
+[source, sh]
+----
+9cc19a20-4abb-4859-ab87-f1e13fe70b93
+1127ff8e-c937-4dca-8532-4ada6e3bca9a
+c34c0c30-2cef-40fe-8b33-6e006a1ed142
+58fe3b18-14bb-4a1d-9e46-117ae7e9435d
+29c3c849-46d6-464b-8147-b35b31210417
+----
+
+== uuid-rust
+
+This project uses Rust and to install it, you can follow https://www.rust-lang.org/tools/install[this procedure].
+
+On my laptop it consists of the following command :
+
+[source, sh]
+----
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+----
+
+To build the Rust executable, we use cargo. Let's try it out :
+
+[source, sh]
+----
+cargo -V
+cargo 1.68.0 (115f34552 2023-02-26)
+----
+
+To build the executable.
+
+[source, sh]
+----
+cd uuid-java
+cargo build --release
+----
+
+We can execute the program to request 5 version 4 uuids, with the following command :
+
+[source, sh]
+----
+./target/release/uuid-rust 4 5
+----
+
+You should see a result similar to this one :
+
+[source, sh]
+----
+9cc19a20-4abb-4859-ab87-f1e13fe70b93
+1127ff8e-c937-4dca-8532-4ada6e3bca9a
+c34c0c30-2cef-40fe-8b33-6e006a1ed142
+58fe3b18-14bb-4a1d-9e46-117ae7e9435d
+29c3c849-46d6-464b-8147-b35b31210417
+----
+
+== Related blog post
+
+Link to the blog https://www.xavierbouclet.com/2023/03/12/Tryout-Rust-Java-CLI.html[post].
