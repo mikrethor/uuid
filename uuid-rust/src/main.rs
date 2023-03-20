@@ -1,28 +1,16 @@
-use clap::Parser;
+use std::fs;
+use std::str::FromStr;
 
-#[derive(Parser)]
-struct Cli {
-    /// version of the uuid to generate 1,2,4
-    version: u32,
-    /// numbers of uuid to request
-    count: u32,
-}
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    let file_path = &args[1];
+    let count = usize::from_str(&args[2])?;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Cli::parse();
-    let client = reqwest::Client::new();
-    let url = format!("https://www.uuidtools.com/api/generate/v{}/count/{}", args.version, args.count);
-    let uuids = client.get(url)
-        .header("Content-Type", "application/json")
-        .send()
-        .await?
-        .json::<Vec<String>>()
-        .await?;
+    let content = fs::read_to_string(file_path);
 
-    uuids.iter().for_each(|uuid| println!("{}", uuid));
+    let uuids: Vec<String> = serde_json::from_str(&content?)?;
+
+    uuids.iter().take(count).for_each(|uuid| println!("{}", uuid));
 
     Ok(())
 }
-
-

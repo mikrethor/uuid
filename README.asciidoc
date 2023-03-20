@@ -55,11 +55,11 @@ cd uuid-java
 ./mvnw package -Pnative -DskipTests
 ----
 
-We can execute the program to request 5 version 4 uuids, with the following command :
+We can execute the program to request 5 uuids, with the following command :
 
 [source, sh]
 ----
-./target/uuid-java 4 5
+./target/uuid-java %path-to-json-file%/uuids.json 5
 ----
 
 You should see a result similar to this one :
@@ -104,7 +104,7 @@ We can execute the program to request 5 version 4 uuids, with the following comm
 
 [source, sh]
 ----
-./target/release/uuid-rust 4 5
+./target/release/uuid-rust %path-to-json-file%/uuids.json 5
 ----
 
 You should see a result similar to this one :
